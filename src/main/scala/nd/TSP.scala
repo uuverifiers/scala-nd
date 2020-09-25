@@ -32,26 +32,25 @@ object TSP extends App with BacktrackingSearch[(List[Int], Int)] {
       findRoute(List(0), 0, g, w)                   // Start at node 0
     }
 
-  private def findRoute(prefix       : Route,
-                        prefixWeight : Int,
-                        g            : WeightMatrix,
-                        maxWeight    : Int) : Unit =
+  def findRoute(prefix       : Route,
+                prefixWeight : Int,
+                g            : WeightMatrix,
+                w            : Int) : Unit =
     if (prefix.size < g.size) {                     //** Incomplete route
-      chooseInt(0 until g.size) {                   // Non-deterministic choice
-        nextNode =>                                 // of next node
+      chooseInt(0 until g.size) {                      // Non-deterministic choice
+        nextNode =>                                    // of next node
 
-        assume(!(prefix contains nextNode))         // Assume node not visited
+        assume(!(prefix contains nextNode))            // Assume node not visited
 
         val newWeight =
           prefixWeight + g(prefix.head)(nextNode)
-        assume(newWeight <= maxWeight)              // Assume route not too long
+        assume(newWeight <= w)                         // Assume route not too long
 
-        findRoute(nextNode :: prefix, newWeight,    // Recursive call
-                  g, maxWeight)
+        findRoute(nextNode :: prefix, newWeight, g, w) // Recursive call
       }
     } else {                                        //** Complete route
       val weight = prefixWeight + g(prefix.head)(0)
-      assume(weight <= maxWeight)                   // Check final weight
+      assume(weight <= w)                              // Check final weight
       success(((0 :: prefix).reverse, weight))
     }
 
@@ -60,6 +59,9 @@ object TSP extends App with BacktrackingSearch[(List[Int], Int)] {
                           Vector(42, 30,   0,  12),
                           Vector(35, 34,  12,   0))
 
-  println(solve(fourCities, 145))
+  solve(fourCities, 145) match {
+    case Some(result) => println("Success: " + result)
+    case None         => println("Nothing found")
+  }
 
 }
