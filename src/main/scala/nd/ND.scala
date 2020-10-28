@@ -44,6 +44,12 @@ trait NDSearch[Result] {
   def chooseInt(r : Range)(comp : Int => Unit) : Unit
 
   /**
+   * Choose the minimum value in the given integer range for which program
+   * execution will succeed.
+   */
+  def chooseMinInt(r : Range)(comp : Int => Unit) : Unit
+
+  /**
    * Assume that the given condition is true, block program execution
    * otherwise.
    */
@@ -101,6 +107,9 @@ trait BacktrackingSearch[Result] extends NDSearch[Result] {
 
   def chooseInt(r : Range)(comp : Int => Unit) : Unit =
     chooseFromIterator(r.iterator, comp)
+
+  def chooseMinInt(r : Range)(comp : Int => Unit) : Unit =
+    chooseInt(r)(comp)
 
   private def chooseFromIterator[T](it : Iterator[T],
                                     comp : T => Unit) : Unit = {
